@@ -1015,16 +1015,14 @@ typedef int (*adc_api_read_async)(const struct device *dev,
  *        voltage in millivolts.
  * See adc_ref_internal() for related public helper.
  */
-typedef uint16_t (*adc_api_vref_get)(const struct device *dev,
-				     enum adc_reference reference);
+typedef uint16_t (*adc_api_vref_get)(const struct device *dev, enum adc_reference reference);
 
 /**
  * @brief Type definition of ADC API function for setting a reference
  *        voltage in millivolts.
  * See adc_ref_internal_set() for argument descriptions.
  */
-typedef int (*adc_api_vref_set)(const struct device *dev,
-				enum adc_reference reference,
+typedef int (*adc_api_vref_set)(const struct device *dev, enum adc_reference reference,
 				uint16_t vref_mv);
 
 /**
@@ -1371,8 +1369,7 @@ static inline uint16_t adc_ref_internal(const struct device *dev)
  */
 __syscall int adc_ref_internal_set(const struct device *dev, uint16_t vref_mv);
 
-static inline int z_impl_adc_ref_internal_set(const struct device *dev,
-					      uint16_t vref_mv)
+static inline int z_impl_adc_ref_internal_set(const struct device *dev, uint16_t vref_mv)
 {
 	const struct adc_driver_api *api = DEVICE_API_GET(adc, dev);
 

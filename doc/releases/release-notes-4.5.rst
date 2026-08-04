@@ -182,6 +182,13 @@ New APIs and options
 
 .. zephyr-keep-sorted-start re(^\* \w) ignorecase
 
+* ADC
+
+  * :c:func:`adc_ref_internal_set`
+  * Optional :c:member:`adc_driver_api.vref_get` and
+    :c:member:`adc_driver_api.vref_set` callbacks, and an updated
+    :c:func:`adc_ref_internal` that uses them when present
+
 * Architectures
 
   * :kconfig:option:`CONFIG_ARM_MPU_CM7_UNMAPPED_REGION` (Arm Cortex-M7 catch-all MPU region
@@ -191,13 +198,6 @@ New APIs and options
 
   * :c:member:`pcm_stream_cfg.gain_db`
   * :c:struct:`audio_codec_eq_cfg`
-
-* ADC
-
-  * :c:func:`adc_ref_internal_set`
-  * Optional :c:member:`adc_driver_api.vref_get` and
-    :c:member:`adc_driver_api.vref_set` callbacks, and an updated
-    :c:func:`adc_ref_internal` that uses them when present
 
 * Bluetooth
 

@@ -747,8 +747,7 @@ ZTEST_USER(adc_emul, test_adc_ref_internal_set_and_get)
 
 	ret = adc_ref_internal_set(adc_dev, 2500);
 	zassert_ok(ret, "adc_ref_internal_set failed: %d", ret);
-	zassert_equal(adc_ref_internal(adc_dev), 2500,
-		      "getter did not observe set value");
+	zassert_equal(adc_ref_internal(adc_dev), 2500, "getter did not observe set value");
 
 	zassert_ok(adc_ref_internal_set(adc_dev, before));
 }
@@ -769,6 +768,7 @@ ZTEST_USER(adc_emul, test_adc_raw_to_millivolts_dt_tracks_ref_internal_set)
 	int32_t output = raw_value;
 	int ret;
 
+	/* clang-format off */
 	static const struct adc_dt_spec adc_internal_spec = {
 		.dev = DEVICE_DT_GET(ADC_DEVICE_NODE),
 		.channel_id = ADC_1ST_CHANNEL_ID,
@@ -781,6 +781,7 @@ ZTEST_USER(adc_emul, test_adc_raw_to_millivolts_dt_tracks_ref_internal_set)
 		},
 		.resolution = ADC_RESOLUTION,
 	};
+	/* clang-format on */
 
 	channel_setup(adc_dev, ADC_REF_INTERNAL, ADC_GAIN_1, ADC_1ST_CHANNEL_ID);
 

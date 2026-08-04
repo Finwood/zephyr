@@ -92,8 +92,7 @@ static inline int z_vrfy_adc_read_async(const struct device *dev,
 #include <zephyr/syscalls/adc_read_async_mrsh.c>
 #endif /* CONFIG_ADC_ASYNC */
 
-static inline int z_vrfy_adc_ref_internal_set(const struct device *dev,
-					      uint16_t vref_mv)
+static inline int z_vrfy_adc_ref_internal_set(const struct device *dev, uint16_t vref_mv)
 {
 	K_OOPS(K_SYSCALL_OBJ(dev, K_OBJ_DRIVER_ADC));
 
