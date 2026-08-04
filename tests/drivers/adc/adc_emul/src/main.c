@@ -759,6 +759,16 @@ ZTEST_USER(adc_emul, test_adc_ref_internal_set_rejects_zero)
 	zassert_equal(adc_ref_internal_set(adc_dev, 0), -EINVAL);
 }
 
+ZTEST_USER(adc_emul, test_adc_emul_ref_voltage_set_rejects_unsupported)
+{
+	const struct device *adc_dev = DEVICE_DT_GET(ADC_DEVICE_NODE);
+
+	/* Fractional VDD refs are derived from ref_vdd; they are not settable. */
+	zassert_equal(adc_emul_ref_voltage_set(adc_dev, ADC_REF_VDD_1_2, 1650), -ENOTSUP);
+	zassert_equal(adc_emul_ref_voltage_set(adc_dev, ADC_REF_VDD_1_3, 1100), -ENOTSUP);
+	zassert_equal(adc_emul_ref_voltage_set(adc_dev, ADC_REF_VDD_1_4, 825), -ENOTSUP);
+}
+
 ZTEST_USER(adc_emul, test_adc_raw_to_millivolts_dt_tracks_ref_internal_set)
 {
 	const struct device *adc_dev = DEVICE_DT_GET(ADC_DEVICE_NODE);
