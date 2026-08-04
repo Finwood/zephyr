@@ -32,7 +32,8 @@ extern "C" {
  * - define a Device Tree overlay file to indicate the number of ADC
  *   controllers as well as the number of channels for each controller
  * - set default reference voltages in Device Tree or using
- *   @ref adc_emul_ref_voltage_set
+ *   @ref adc_emul_ref_voltage_set (same storage as @ref adc_ref_internal()
+ *   and the optional driver @c vref_get / @c vref_set ops)
  * - asynchronously call @ref adc_emul_const_value_set in order to set
  *   constant mV value on emulated ADC input
  * - asynchronously call @ref adc_emul_value_func_set in order to assign
@@ -123,7 +124,11 @@ int adc_emul_raw_value_func_set(const struct device *dev, unsigned int chan,
  * @param value New reference voltage in mV
  *
  * @return 0 on success
- * @return -EINVAL if an invalid argument is provided
+ * @return -EINVAL if @p value is zero
+ * @return -ENOTSUP if @p ref is not supported
+ *
+ * @note Updates the same reference storage observed by @ref adc_ref_internal()
+ *       and the optional driver @c vref_get / @c vref_set ops.
  */
 int adc_emul_ref_voltage_set(const struct device *dev, enum adc_reference ref,
 			     uint16_t value);

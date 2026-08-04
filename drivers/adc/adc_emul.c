@@ -202,36 +202,6 @@ int adc_emul_raw_value_func_set(const struct device *dev, unsigned int chan,
 	return 0;
 }
 
-int adc_emul_ref_voltage_set(const struct device *dev, enum adc_reference ref,
-			     uint16_t value)
-{
-	struct adc_emul_data *data = dev->data;
-	int err = 0;
-
-	k_mutex_lock(&data->cfg_mtx, K_FOREVER);
-
-	switch (ref) {
-	case ADC_REF_VDD_1:
-		data->ref_vdd = value;
-		break;
-	case ADC_REF_INTERNAL:
-		data->ref_int = value;
-		break;
-	case ADC_REF_EXTERNAL0:
-		data->ref_ext0 = value;
-		break;
-	case ADC_REF_EXTERNAL1:
-		data->ref_ext1 = value;
-		break;
-	default:
-		err = -EINVAL;
-	}
-
-	k_mutex_unlock(&data->cfg_mtx);
-
-	return err;
-}
-
 /**
  * @brief Convert @p ref to reference voltage value in mV
  *
@@ -277,6 +247,56 @@ static uint16_t adc_emul_get_ref_voltage(struct adc_emul_data *data,
 	k_mutex_unlock(&data->cfg_mtx);
 
 	return voltage;
+}
+
+static uint16_t adc_emul_vref_get(const struct device *dev,
+				  enum adc_reference reference)
+{
+	struct adc_emul_data *data = dev->data;
+
+	return adc_emul_get_ref_voltage(data, reference);
+}
+
+static int adc_emul_vref_set(const struct device *dev,
+			     enum adc_reference reference,
+			     uint16_t vref_mv)
+{
+	struct adc_emul_data *data = dev->data;
+	int err = 0;
+
+	if (vref_mv == 0) {
+		return -EINVAL;
+	}
+
+	k_mutex_lock(&data->cfg_mtx, K_FOREVER);
+
+	switch (reference) {
+	case ADC_REF_VDD_1:
+		data->ref_vdd = vref_mv;
+		break;
+	case ADC_REF_INTERNAL:
+		data->ref_int = vref_mv;
+		break;
+	case ADC_REF_EXTERNAL0:
+		data->ref_ext0 = vref_mv;
+		break;
+	case ADC_REF_EXTERNAL1:
+		data->ref_ext1 = vref_mv;
+		break;
+	default:
+		err = -ENOTSUP;
+		break;
+	}
+
+	k_mutex_unlock(&data->cfg_mtx);
+
+	return err;
+}
+
+int adc_emul_ref_voltage_set(const struct device *dev, enum adc_reference ref,
+			     uint16_t value)
+{
+	return adc_emul_vref_set(dev, ref, value);
 }
 
 static int adc_emul_channel_setup(const struct device *dev,
@@ -623,6 +643,8 @@ static int adc_emul_init(const struct device *dev)
 		.channel_setup = adc_emul_channel_setup,		\
 		.read = adc_emul_read,					\
 		.ref_internal = DT_INST_PROP(_num, ref_internal_mv),	\
+		.vref_get = adc_emul_vref_get,				\
+		.vref_set = adc_emul_vref_set,				\
 		IF_ENABLED(CONFIG_ADC_ASYNC,				\
 			(.read_async = adc_emul_read_async,))		\
 	};								\
