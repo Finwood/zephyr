@@ -56,6 +56,10 @@ int main(void)
 			printk("Could not setup channel #%d (%d)\n", i, err);
 			return 0;
 		}
+
+		uint16_t vref = adc_ref_internal(adc_channels[i].dev);
+
+		printk("ADC ref_internal: %u mV\n", vref);
 	}
 
 #ifndef CONFIG_COVERAGE
