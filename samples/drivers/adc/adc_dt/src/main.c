@@ -46,6 +46,8 @@ int main(void)
 
 	/* Configure channels individually prior to sampling. */
 	for (size_t i = 0U; i < ARRAY_SIZE(adc_channels); i++) {
+		bool already_printed = false;
+
 		if (!adc_is_ready_dt(&adc_channels[i])) {
 			printk("ADC controller device %s not ready\n", adc_channels[i].dev->name);
 			return 0;
@@ -57,9 +59,17 @@ int main(void)
 			return 0;
 		}
 
-		uint16_t vref = adc_ref_internal(adc_channels[i].dev);
-
-		printk("ADC ref_internal: %u mV\n", vref);
+		/* ref_internal is per controller; print once per unique device. */
+		for (size_t j = 0U; j < i; j++) {
+			if (adc_channels[j].dev == adc_channels[i].dev) {
+				already_printed = true;
+				break;
+			}
+		}
+		if (!already_printed) {
+			printk("ADC ref_internal (%s): %u mV\n", adc_channels[i].dev->name,
+			       adc_ref_internal(adc_channels[i].dev));
+		}
 	}
 
 #ifndef CONFIG_COVERAGE

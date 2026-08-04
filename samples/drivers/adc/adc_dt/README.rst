@@ -52,11 +52,19 @@ and provide a corresponding devicetree overlay.
 Sample output
 =============
 
-You should get a similar output as below, repeated every second:
+During channel setup the sample prints each ADC controller's internal
+reference in millivolts (via :c:func:`adc_ref_internal`). Drivers that do not
+support runtime updates still report their static reference; calling
+:c:func:`adc_ref_internal_set` on those devices returns ``-ENOTSUP`` and is
+not required for this sample.
+
+You should get a similar output as below, with the reading block repeated
+every second:
 
 .. code-block:: console
 
-   ADC reading:
+   ADC ref_internal (ADC_0): 3300 mV
+   ADC reading[0]:
    - ADC_0, channel 7: 36 = 65mV
 
 .. note:: If the ADC is not supported, the output will be an error message.
